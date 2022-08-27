@@ -140,7 +140,9 @@ func (instance *scheduler) DayHour(hour string, task func()) uint {
 	return instance.add(fmt.Sprintf("0 %s * * *", hour), task)
 }
 
-//	Minute 每到这个时分执行
+//	Minute 每到这个分执行一次
+//	minute string 每个小时执行的分时，如 5 则在每时的第 5 分执行一次
+//	task func() 任务
 func (instance *scheduler) Minute(minute string, task func()) uint {
 	if nil == task {
 		return 0
