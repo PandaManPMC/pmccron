@@ -3,6 +3,10 @@
 
 #### 使用方式
 
+```
+go get github.com/PandaManPMC/pmccron@v1.0.2
+```
+
 ```go
 func main() {
 	scheduler := pmccron.InitSchedulerSingle(func(msg string) {
