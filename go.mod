@@ -1,4 +1,4 @@
-module pmccron
+module github.com/PandaManPMC/pmccron
 
 go 1.17
 
