@@ -23,7 +23,7 @@ func runScheduler() {
 			runScheduler()
 		}()
 
-		ticker := time.NewTicker(time.Second)
+		ticker := time.NewTicker(3 * time.Second)
 		for range ticker.C {
 			if running {
 				continue

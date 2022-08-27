@@ -4,7 +4,7 @@
 #### 使用方式
 
 ```
-go get github.com/PandaManPMC/pmccron@v1.0.2
+go get github.com/PandaManPMC/pmccron@v1.0.3
 ```
 
 ```go
