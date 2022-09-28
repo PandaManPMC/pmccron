@@ -28,4 +28,8 @@ func TestCron(t *testing.T) {
 	t.Log(m.Next(time.Now()))
 
 	t.Log(cronexpr.MustParse("40 14 * * *").Next(time.Now()))
+
+	//	每月 1 号 上午 8 点 执行
+	t.Log(cronexpr.MustParse("0 0 8 1 * ? *").Next(time.Now()))
+
 }

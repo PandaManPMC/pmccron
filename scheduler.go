@@ -23,7 +23,7 @@ func runScheduler() {
 			runScheduler()
 		}()
 
-		ticker := time.NewTicker(3 * time.Second)
+		ticker := time.NewTicker(2 * time.Second)
 		for range ticker.C {
 			if running {
 				continue
@@ -128,6 +128,16 @@ func (instance *scheduler) add(cron string, task func()) uint {
 	instance.taskList = append(instance.taskList, &st)
 	instance.logInfo(fmt.Sprintf("定时任务%d，cron=%s，下次执行时间%s", st.sn, st.cron, next.String()))
 	return st.sn
+}
+
+//	Cron	根据表达式执行
+//	cronStr string	cron 表达式
+//	task func() 任务
+func (instance *scheduler) Cron(cronStr string, task func()) uint {
+	if nil == task {
+		return 0
+	}
+	return instance.add(cronStr, task)
 }
 
 //	DayHour 增加每天执行一次的任务

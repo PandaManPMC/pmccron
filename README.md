@@ -4,7 +4,7 @@
 #### 使用方式
 
 ```
-go get github.com/PandaManPMC/pmccron@v1.0.3
+go get github.com/PandaManPMC/pmccron@v1.0.4
 ```
 
 ```go
@@ -24,6 +24,10 @@ func main() {
 		fmt.Println("执行每时的第 15 分的定时任务")
 	})
 
+    scheduler.Cron("0 8 18 28 * ? *", func() {
+        fmt.Println("根据表达式执行")
+    })
+	
 	scheduler.Running()
 	time.Sleep(24 * time.Hour)
 }

@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"pmccron/pmccron"
+	"github.com/PandaManPMC/pmccron"
 	"time"
 )
 
@@ -26,6 +26,11 @@ func main() {
 		fmt.Println("执行每时的第 15 分的定时任务")
 	})
 
+	scheduler.Cron("0 8 18 28 * ? *", func() {
+		fmt.Println("根据表达式执行")
+	})
+
 	scheduler.Running()
 	time.Sleep(24 * time.Hour)
+
 }
