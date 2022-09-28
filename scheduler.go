@@ -17,10 +17,13 @@ func runScheduler() {
 	go func() {
 		defer func() {
 			err := recover()
-			if nil != schedulerInstance.logError {
-				schedulerInstance.logError("", err)
+			if nil != err {
+				if nil != schedulerInstance.logError {
+					schedulerInstance.logError("", err)
+				}
+				runScheduler()
+				running = false
 			}
-			runScheduler()
 		}()
 
 		ticker := time.NewTicker(2 * time.Second)
@@ -48,7 +51,17 @@ func startTask() {
 		//schedulerInstance.logInfo(fmt.Sprintf("检查定时任务%d，cron=%s，下次执行时间是%s，现在时间是%s", task.sn, task.cron, time.Unix(task.nextTime, 0).String(), now.String()))
 		if task.nextTime < now.Unix() {
 			// 表示到了执行时间，执行定时任务
-			go task.fun()
+			go func() {
+				defer func() {
+					err := recover()
+					if nil != err {
+						if nil != schedulerInstance.logError {
+							schedulerInstance.logError("", err)
+						}
+					}
+				}()
+				task.fun()
+			}()
 			// 计算下次执行时间
 			cpr := cronexpr.MustParse(task.cron)
 			nextTime := cpr.Next(time.Now())
