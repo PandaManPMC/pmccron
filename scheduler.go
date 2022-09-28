@@ -56,7 +56,7 @@ func startTask() {
 					err := recover()
 					if nil != err {
 						if nil != schedulerInstance.logError {
-							schedulerInstance.logError("", err)
+							schedulerInstance.logError(fmt.Sprintf("定时任务%d", task.sn), err)
 						}
 					}
 				}()

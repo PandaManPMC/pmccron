@@ -30,6 +30,15 @@ func main() {
 		fmt.Println("根据表达式执行")
 	})
 
+	count := 0
+	scheduler.Cron("0 * * * * ? *", func() {
+		fmt.Println("每 1 分执行一次的定时任务")
+		count += 1
+		if 1 == count {
+			panic("异常测试")
+		}
+	})
+
 	scheduler.Running()
 	time.Sleep(24 * time.Hour)
 
