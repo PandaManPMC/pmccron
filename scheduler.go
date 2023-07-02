@@ -38,7 +38,7 @@ func runScheduler() {
 	}()
 }
 
-//	startTask 遍历定时任务，检测是否需要启动
+// startTask 遍历定时任务，检测是否需要启动
 func startTask() {
 	schedulerInstance.lock.Lock()
 	defer schedulerInstance.lock.Unlock()
@@ -82,9 +82,13 @@ type scheduler struct {
 
 var schedulerInstance *scheduler = nil
 
-//	InitSchedulerSingle 定时任务调度器实例化【单例】
-//	logInfo  func(msg string)	info 日志输出函数
-//	logError func(msg string, err interface{}) err 日志输出函数
+func GetInstanceByScheduler() *scheduler {
+	return schedulerInstance
+}
+
+// InitSchedulerSingle 定时任务调度器实例化【单例】
+// logInfo  func(msg string)	info 日志输出函数
+// logError func(msg string, err interface{}) err 日志输出函数
 func InitSchedulerSingle(logInfo func(msg string), logError func(msg string, err interface{})) *scheduler {
 	if nil == logInfo {
 		return nil
@@ -106,7 +110,7 @@ func InitSchedulerSingle(logInfo func(msg string), logError func(msg string, err
 	return schedulerInstance
 }
 
-//	Running 启动定时任务调度器
+// Running 启动定时任务调度器
 func (instance *scheduler) Running() bool {
 	instance.lock.Lock()
 	defer instance.lock.Unlock()
@@ -118,10 +122,10 @@ func (instance *scheduler) Running() bool {
 	return instance.running
 }
 
-//	add 添加定时任务
-//	cron string 完整的 cron 表达式
-//	task func()	任务
-//	uint 任务编号，0 则表示失败
+// add 添加定时任务
+// cron string 完整的 cron 表达式
+// task func()	任务
+// uint 任务编号，0 则表示失败
 func (instance *scheduler) add(cron string, task func()) uint {
 	instance.lock.Lock()
 	defer instance.lock.Unlock()
@@ -143,9 +147,9 @@ func (instance *scheduler) add(cron string, task func()) uint {
 	return st.sn
 }
 
-//	Cron	根据表达式执行
-//	cronStr string	cron 表达式
-//	task func() 任务
+// Cron	根据表达式执行
+// cronStr string	cron 表达式
+// task func() 任务
 func (instance *scheduler) Cron(cronStr string, task func()) uint {
 	if nil == task {
 		return 0
@@ -153,9 +157,9 @@ func (instance *scheduler) Cron(cronStr string, task func()) uint {
 	return instance.add(cronStr, task)
 }
 
-//	DayHour 增加每天执行一次的任务
-//	hour string	每天执行的时间，如 08 则在每日 8 时执行一次
-//	task func()	任务
+// DayHour 增加每天执行一次的任务
+// hour string	每天执行的时间，如 08 则在每日 8 时执行一次
+// task func()	任务
 func (instance *scheduler) DayHour(hour string, task func()) uint {
 	if nil == task {
 		return 0
@@ -163,9 +167,9 @@ func (instance *scheduler) DayHour(hour string, task func()) uint {
 	return instance.add(fmt.Sprintf("0 %s * * *", hour), task)
 }
 
-//	Minute 每到这个分执行一次
-//	minute string 每个小时执行的分时，如 5 则在每时的第 5 分执行一次
-//	task func() 任务
+// Minute 每到这个分执行一次
+// minute string 每个小时执行的分时，如 5 则在每时的第 5 分执行一次
+// task func() 任务
 func (instance *scheduler) Minute(minute string, task func()) uint {
 	if nil == task {
 		return 0
