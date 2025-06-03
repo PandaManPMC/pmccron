@@ -39,6 +39,10 @@ func main() {
 		}
 	})
 
+	scheduler.CronByName("每小时的1分钟0秒执行", pmccron.MinuteOneInEveryHour, func() {
+		fmt.Println("根据表达式执行")
+	})
+
 	scheduler.Running()
 	time.Sleep(24 * time.Hour)
 

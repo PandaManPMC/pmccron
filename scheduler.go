@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-//  author: laoniqiu
+//  author: PMC
 //  since: 2022/8/27
 //  desc: pmccron 调度器
 
@@ -126,7 +126,7 @@ func (instance *scheduler) Running() bool {
 // cron string 完整的 cron 表达式
 // task func()	任务
 // uint 任务编号，0 则表示失败
-func (instance *scheduler) add(cron string, task func()) uint {
+func (instance *scheduler) add(taskName, cron string, task func()) uint {
 	instance.lock.Lock()
 	defer instance.lock.Unlock()
 	cpr, err := cronexpr.Parse(cron)
@@ -135,15 +135,21 @@ func (instance *scheduler) add(cron string, task func()) uint {
 	}
 	next := cpr.Next(time.Now())
 	instance.nextSn++
+
+	if "" == taskName {
+		taskName = fmt.Sprintf("%d", instance.nextSn)
+	}
+
 	st := schedulerTask{
 		sn:       instance.nextSn,
 		deleted:  false,
 		cron:     cron,
 		fun:      task,
 		nextTime: next.Unix(),
+		taskName: taskName,
 	}
 	instance.taskList = append(instance.taskList, &st)
-	instance.logInfo(fmt.Sprintf("定时任务%d，cron=%s，下次执行时间%s", st.sn, st.cron, next.String()))
+	instance.logInfo(fmt.Sprintf("定时任务%s，cron=%s，下次执行时间%s", taskName, st.cron, next.String()))
 	return st.sn
 }
 
@@ -154,7 +160,18 @@ func (instance *scheduler) Cron(cronStr string, task func()) uint {
 	if nil == task {
 		return 0
 	}
-	return instance.add(cronStr, task)
+	return instance.add("", cronStr, task)
+}
+
+// CronByName	根据表达式执行，接受一个任务名称
+// taskName string 任务名称
+// cronStr string	cron 表达式
+// task func() 任务
+func (instance *scheduler) CronByName(taskName, cronStr string, task func()) uint {
+	if nil == task {
+		return 0
+	}
+	return instance.add(taskName, cronStr, task)
 }
 
 // DayHour 增加每天执行一次的任务
@@ -164,7 +181,7 @@ func (instance *scheduler) DayHour(hour string, task func()) uint {
 	if nil == task {
 		return 0
 	}
-	return instance.add(fmt.Sprintf("0 %s * * *", hour), task)
+	return instance.add("", fmt.Sprintf("0 %s * * *", hour), task)
 }
 
 // Minute 每到这个分执行一次
@@ -174,5 +191,5 @@ func (instance *scheduler) Minute(minute string, task func()) uint {
 	if nil == task {
 		return 0
 	}
-	return instance.add(fmt.Sprintf("%s * * * *", minute), task)
+	return instance.add("", fmt.Sprintf("%s * * * *", minute), task)
 }

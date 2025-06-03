@@ -10,4 +10,5 @@ type schedulerTask struct {
 	cron     string // 表达式
 	fun      func() // 任务函数
 	nextTime int64  // 下次执行时间戳
+	taskName string // 任务名称
 }
